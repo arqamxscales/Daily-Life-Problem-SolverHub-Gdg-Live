@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { AlertTriangle, Bot, CalendarClock, Clock3, LogIn, MessageSquare, Plus, Rocket, Sparkles, Target, Wand2 } from 'lucide-react'
+import { AlertTriangle, Bot, CalendarClock, Clock3, MessageSquare, Plus, Rocket, Sparkles, Target, Wand2 } from 'lucide-react'
 import clsx from 'clsx'
 import type { Session } from '@supabase/supabase-js'
 import { hasGemini, hasSupabase } from './lib/env'
@@ -12,15 +12,14 @@ import {
   fetchChatMessagesFromSupabase,
   fetchChatThreadsFromSupabase,
   fetchPlanHistoryFromSupabase,
+  DEMO_USER_ID,
   hardenAuthSession,
   getCurrentSession,
   onAuthChange,
   saveChatMessagesToSupabase,
   savePlanToSupabase,
-  signInWithEmail,
-  signInWithGoogle,
+  signInDemo,
   signOutSupabase,
-  signUpWithEmail,
 } from './lib/supabase'
 import { getAnonymousId, loadLocalChatMemory, loadLocalChatThreads, loadLocalHistory, saveLocalChatMemory, saveLocalChatThreads, savePlanToLocal } from './lib/storage'
 import type { AgentMode, ChatMessage, ChatThread, PlanRecord, Priority, ProblemInput } from './types'
@@ -82,17 +81,29 @@ function AppMain() {
   const [activeThreadId, setActiveThreadId] = useState(() => chatThreads[0].id)
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [starterMessage(chatThreads[0].id)])
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isSignUp, setIsSignUp] = useState(false)
-
   const [status, setStatus] = useState('Ready. Describe your problem to get a practical action plan.')
+  const isDemoSession = session?.user.id === DEMO_USER_ID
 
-  const stackLabel = `${hasGemini ? 'Secure Gemini proxy' : 'Smart fallback engine'} · ${hasSupabase ? 'Supabase connected' : 'Local mode'}`
+  const stackLabel = `${isDemoSession ? 'Beta demo mode' : hasGemini ? 'Secure Gemini proxy' : 'Smart fallback engine'} · ${isDemoSession ? 'local memory only' : hasSupabase ? 'Supabase connected' : 'Local mode'}`
 
   const identityKey = useMemo(() => (session?.user.id ? `user:${session.user.id}` : `anon:${anonymousId}`), [session, anonymousId])
 
   const refreshMemories = useCallback(async (currentSession: Session | null) => {
+    if (currentSession?.user.id === DEMO_USER_ID) {
+      const key = `anon:${anonymousId}`
+      let threads = loadLocalChatThreads(key)
+      if (threads.length === 0) {
+        threads = [createThread()]
+      }
+
+      const selectedThreadId = threads[0].id
+      const localChat = loadLocalChatMemory(key, selectedThreadId)
+      setChatThreads(threads)
+      setActiveThreadId(selectedThreadId)
+      setChatMessages(localChat.length > 0 ? localChat : [starterMessage(selectedThreadId)])
+      return
+    }
+
     const key = currentSession?.user.id ? `user:${currentSession.user.id}` : `anon:${anonymousId}`
 
     let threads = loadLocalChatThreads(key)
@@ -174,7 +185,7 @@ function AppMain() {
 
     saveLocalChatThreads(identityKey, chatThreads)
     saveLocalChatMemory(identityKey, activeThreadId, chatMessages)
-    if (session) {
+    if (session && !isDemoSession) {
       const activeThread = chatThreads.find((thread) => thread.id === activeThreadId)
       if (activeThread) {
         void createChatThreadInSupabase(activeThread)
@@ -192,7 +203,7 @@ function AppMain() {
     setHistory(localHistory)
     setActivePlan(record)
 
-    const dbResult = await savePlanToSupabase(record)
+    const dbResult = isDemoSession ? { ok: false as const, reason: 'demo_mode' as const } : await savePlanToSupabase(record)
     if (dbResult.ok) {
       setStatus('Saved locally and synced to Supabase.')
     } else {
@@ -371,33 +382,10 @@ function AppMain() {
     setChatMessages([starterMessage(threadId)])
   }
 
-  async function handleGoogleAuth() {
+  async function handleDemoLogin() {
     setAuthLoading(true)
-    const result = await signInWithGoogle()
-    if (!result.ok) {
-      setStatus('Google auth failed. Check Supabase OAuth settings.')
-    }
-    setAuthLoading(false)
-  }
-
-  async function handleEmailAuth(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!email.trim() || !password.trim()) {
-      setStatus('Enter email and password.')
-      return
-    }
-
-    setAuthLoading(true)
-    const result = isSignUp
-      ? await signUpWithEmail(email.trim(), password)
-      : await signInWithEmail(email.trim(), password)
-
-    if (result.ok) {
-      setStatus(isSignUp ? 'Account created. Check email if confirmation is enabled.' : 'Signed in successfully.')
-    } else {
-      setStatus(isSignUp ? 'Sign up failed.' : 'Sign in failed.')
-    }
-
+    const result = await signInDemo()
+    setStatus(result.ok ? 'Demo login active. This beta session uses local memory.' : 'Demo login failed.')
     setAuthLoading(false)
   }
 
@@ -423,7 +411,7 @@ function AppMain() {
               <p className="mt-2 text-sm text-slate-200/90">{stackLabel}</p>
             </div>
             <span className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-100">
-              {session ? `Signed in: ${session.user.email}` : 'Anonymous mode'}
+              {session ? (isDemoSession ? 'Demo beta login active' : `Signed in: ${session.user.email}`) : 'Beta demo mode'}
             </span>
           </div>
         </motion.header>
@@ -431,7 +419,7 @@ function AppMain() {
         <section className="mb-6 rounded-2xl border border-white/10 bg-slate-900/70 p-5 backdrop-blur">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="inline-flex items-center gap-2 text-lg font-semibold">
-              <LogIn size={18} /> Authentication (Supabase)
+              <Sparkles size={18} /> Beta demo access
             </h2>
             {session ? (
               <button
@@ -445,63 +433,20 @@ function AppMain() {
           </div>
 
           {!session ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              <form onSubmit={handleEmailAuth} className="space-y-3 rounded-xl border border-white/10 bg-slate-950/60 p-4">
-                <p className="text-sm font-semibold">Email auth</p>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="Email"
-                  className="w-full rounded-xl border border-white/15 bg-slate-900/80 px-3 py-2 text-sm outline-none ring-indigo-400/40 transition focus:ring"
-                />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Password"
-                  className="w-full rounded-xl border border-white/15 bg-slate-900/80 px-3 py-2 text-sm outline-none ring-indigo-400/40 transition focus:ring"
-                />
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsSignUp(false)}
-                    className={clsx('rounded-lg px-3 py-1 text-xs', !isSignUp ? 'bg-indigo-500 text-white' : 'bg-slate-800')}
-                  >
-                    Sign in
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsSignUp(true)}
-                    className={clsx('rounded-lg px-3 py-1 text-xs', isSignUp ? 'bg-indigo-500 text-white' : 'bg-slate-800')}
-                  >
-                    Sign up
-                  </button>
-                </div>
-                <button
-                  type="submit"
-                  disabled={authLoading}
-                  className={clsx('w-full rounded-xl px-3 py-2 text-sm font-semibold', authLoading ? 'bg-indigo-300/30' : 'bg-indigo-500 hover:bg-indigo-400')}
-                >
-                  {isSignUp ? 'Create account' : 'Sign in with email'}
-                </button>
-              </form>
-
-              <div className="rounded-xl border border-white/10 bg-slate-950/60 p-4">
-                <p className="mb-3 text-sm font-semibold">Google OAuth</p>
-                <button
-                  type="button"
-                  onClick={handleGoogleAuth}
-                  disabled={authLoading}
-                  className={clsx('rounded-xl px-3 py-2 text-sm font-semibold', authLoading ? 'bg-indigo-300/30' : 'bg-indigo-500 hover:bg-indigo-400')}
-                >
-                  Continue with Google
-                </button>
-                <p className="mt-3 text-xs text-slate-400">Enable Google provider in Supabase Authentication settings first.</p>
-              </div>
+            <div className="space-y-4 rounded-xl border border-amber-300/20 bg-slate-950/60 p-4">
+              <p className="text-sm font-semibold text-amber-200">Beta only</p>
+              <p className="text-sm text-slate-300">This build uses a demo login only. Real Google/email authentication is intentionally disabled for the beta release.</p>
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={authLoading}
+                className={clsx('rounded-xl px-3 py-2 text-sm font-semibold', authLoading ? 'bg-indigo-300/30' : 'bg-indigo-500 hover:bg-indigo-400')}
+              >
+                {authLoading ? 'Opening demo...' : 'Demo login'}
+              </button>
             </div>
           ) : (
-            <p className="text-sm text-emerald-200">Authenticated. Plans and chat memory sync across sessions.</p>
+            <p className="text-sm text-emerald-200">Demo session active. Plans and chat memory stay local in beta mode.</p>
           )}
         </section>
 

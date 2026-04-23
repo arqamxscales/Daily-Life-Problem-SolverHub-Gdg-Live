@@ -2,11 +2,11 @@
 
 ## Project Summary
 
-**Daily Life Problem Solver Hub** is a production-ready AI web application that transforms personal challenges into actionable plans. Built for **Google Developers Club Live Pakistan** using **Google AI Studio** and **Gemini 2.5 Flash API**.
+**Daily Life Problem Solver Hub** is a beta AI web application that transforms personal challenges into actionable plans. Built for **Google Developers Club Live Pakistan** using **Google AI Studio** and **Gemini 2.5 Flash API**.
 
 ---
 
-## 📊 Project Status: ✅ PRODUCTION LIVE
+## 📊 Project Status: ✅ BETA LIVE
 
 | Component | Status | Link |
 |-----------|--------|------|
@@ -37,10 +37,9 @@
 - Follow-up queries & blocker guidance
 - Persistent memory across sessions
 
-### 🔐 Security & Authentication
-- Google OAuth with PKCE flow
-- Email/Password authentication
-- Token refresh hardening (60s intervals)
+### 🔐 Security & Access
+- Demo login only for beta access
+- Token refresh hardening retained for future auth
 - RLS-protected Supabase database
 - Server-side Gemini proxy (never exposed to browser)
 
@@ -63,10 +62,8 @@
 - **UI Components:** Custom built with Tailwind
 
 ### Backend & APIs
-- **Auth:** Supabase Authentication
-  - Google OAuth (PKCE flow)
-  - Email/Password registration
-  - Session hardening
+- **Auth:** Demo login only for beta access
+  - Session hardening retained for future auth
 - **Database:** Supabase PostgreSQL
   - `problem_plans` (user plans)
   - `chat_threads` (conversation management)
@@ -307,7 +304,7 @@ npm run db:seed # ✅ One-click demo data
 
 ### 1. First-Time User
 1. Visit app → redirected to `/auth`
-2. Sign in with Google or email
+2. Use the demo login button
 3. Redirected to `/dashboard`
 4. Write problem → Get plan
 5. Chat about plan → Get guidance
@@ -362,7 +359,7 @@ MIT License (or as specified in LICENSE file)
 
 ### Immediate
 - [ ] Set Vercel environment variables
-- [ ] Test Google OAuth sign-in
+- [ ] Verify demo login flow
 - [ ] Verify Supabase RLS policies
 - [ ] Load test with seed data
 - [ ] Share on GDG Live Pakistan community
@@ -434,13 +431,13 @@ MIT License (or as specified in LICENSE file)
 
 ## 🎉 Project Complete!
 
-**Daily Life Problem Solver Hub** is now production-ready and live. All code is on GitHub, the app is deployed on Vercel, and comprehensive documentation is in place.
+**Daily Life Problem Solver Hub** is now beta live. All code is on GitHub, the app is deployed on Vercel, and comprehensive documentation is in place.
 
 **Ready to share with the world! 🚀**
 
 ---
 
 *Last Updated: April 23, 2026*
-*Status: ✅ Production Live*
+*Status: ✅ Beta Live*
 *Commit: 52321dd (docs: Add comprehensive launch posts)*
 *Release: v1.0.0-launch*

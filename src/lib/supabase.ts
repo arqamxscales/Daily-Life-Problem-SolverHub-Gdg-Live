@@ -5,6 +5,63 @@ import type { ChatMessage, ChatThread, PlanRecord } from '../types'
 const PLAN_TABLE = 'problem_plans'
 const THREAD_TABLE = 'chat_threads'
 const CHAT_TABLE = 'chat_messages'
+const DEMO_SESSION_KEY = 'dlps_demo_session'
+export const DEMO_USER_ID = 'demo-user'
+const DEMO_EMAIL = 'demo@daily-life-problem-solver-hub.local'
+
+function createDemoSession(): Session {
+  const now = new Date().toISOString()
+
+  return {
+    access_token: 'demo-access-token',
+    refresh_token: 'demo-refresh-token',
+    expires_in: 365 * 24 * 60 * 60,
+    expires_at: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+    token_type: 'bearer',
+    provider_token: null,
+    provider_refresh_token: null,
+    user: {
+      id: DEMO_USER_ID,
+      app_metadata: { provider: 'demo', providers: ['demo'] },
+      user_metadata: { full_name: 'Demo User' },
+      aud: 'authenticated',
+      created_at: now,
+      email: DEMO_EMAIL,
+      email_confirmed_at: now,
+      phone: '',
+      role: 'authenticated',
+      updated_at: now,
+      identities: [],
+    } as Session['user'],
+  } as Session
+}
+
+function isDemoSession(session: Session | null) {
+  return session?.user.id === DEMO_USER_ID
+}
+
+function loadDemoSession() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const raw = window.localStorage.getItem(DEMO_SESSION_KEY)
+  return raw === 'true' ? createDemoSession() : null
+}
+
+function saveDemoSession(active: boolean) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  if (active) {
+    window.localStorage.setItem(DEMO_SESSION_KEY, 'true')
+  } else {
+    window.localStorage.removeItem(DEMO_SESSION_KEY)
+  }
+
+  window.dispatchEvent(new Event('dlps-demo-session-change'))
+}
 
 const supabase = hasSupabase
   ? createClient(env.supabaseUrl!, env.supabaseAnonKey!, {
@@ -23,6 +80,11 @@ export function getSupabaseClient() {
 }
 
 export async function getCurrentSession() {
+  const demoSession = loadDemoSession()
+  if (demoSession) {
+    return demoSession
+  }
+
   if (!supabase) {
     return null
   }
@@ -67,71 +129,40 @@ export async function hardenAuthSession() {
 }
 
 export function onAuthChange(callback: (session: Session | null) => void) {
-  if (!supabase) {
-    return () => undefined
+  const handleDemoSessionChange = () => {
+    callback(loadDemoSession())
   }
 
-  const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session)
-  })
+  window.addEventListener('dlps-demo-session-change', handleDemoSessionChange)
+
+  if (supabase) {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isDemoSession(session)) {
+        callback(session)
+      }
+    })
+
+    return () => {
+      data.subscription.unsubscribe()
+      window.removeEventListener('dlps-demo-session-change', handleDemoSessionChange)
+    }
+  }
 
   return () => {
-    data.subscription.unsubscribe()
+    window.removeEventListener('dlps-demo-session-change', handleDemoSessionChange)
   }
 }
 
-export async function signInWithGoogle() {
-  if (!supabase) {
-    return { ok: false as const, reason: 'not_configured' as const }
-  }
-
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/dashboard`,
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
-      },
-    },
-  })
-
-  if (error) {
-    return { ok: false as const, reason: 'oauth_failed' as const }
-  }
-
-  return { ok: true as const }
-}
-
-export async function signInWithEmail(email: string, password: string) {
-  if (!supabase) {
-    return { ok: false as const, reason: 'not_configured' as const }
-  }
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) {
-    return { ok: false as const, reason: 'signin_failed' as const }
-  }
-
-  return { ok: true as const }
-}
-
-export async function signUpWithEmail(email: string, password: string) {
-  if (!supabase) {
-    return { ok: false as const, reason: 'not_configured' as const }
-  }
-
-  const { error } = await supabase.auth.signUp({ email, password })
-  if (error) {
-    return { ok: false as const, reason: 'signup_failed' as const }
-  }
-
-  return { ok: true as const }
+export async function signInDemo() {
+  saveDemoSession(true)
+  return { ok: true as const, session: createDemoSession() }
 }
 
 export async function signOutSupabase() {
+  saveDemoSession(false)
+
   if (!supabase) {
-    return { ok: false as const, reason: 'not_configured' as const }
+    return { ok: true as const }
   }
 
   const { error } = await supabase.auth.signOut()

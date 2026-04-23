@@ -1,13 +1,15 @@
 # Daily Life Problem Solver Hub
 
-Modern AI web app that turns personal daily-life problems into a practical action plan, weekly steps, and a 7-day schedule.
+Beta AI web app that turns personal daily-life problems into a practical action plan, weekly steps, and a 7-day schedule.
+
+**Beta notice:** this release uses demo login only. Real Google/email authentication is disabled for now.
 
 ## Stack
 
 - React + TypeScript + Vite
 - Tailwind CSS + Framer Motion
-- Supabase Auth (Google + Email/Password)
-- Supabase database for plan + chat memory
+- Demo login session for beta access
+- Local chat + plan memory for demo usage
 - Gemini via server-side proxy API (`/api/*`)
 - Streaming chatbot responses
 
@@ -27,10 +29,10 @@ Modern AI web app that turns personal daily-life problems into a practical actio
    - Scheduler Agent
 - One-click plan upgrade using selected agent mode
 - AI chatbot for plan follow-up queries and blocker guidance
-- Real auth (Google/email)
+- Demo login only
 - Route guards + auth-only pages (`/dashboard` protected, `/auth` public)
 - Streaming chat responses
-- Memory across sessions (local + Supabase)
+- Memory across sessions (local demo mode)
 - Multi-thread chat (multiple conversations per user)
 - Local history fallback (always)
 - Fallback smart planner when AI is unavailable
@@ -55,6 +57,12 @@ Modern AI web app that turns personal daily-life problems into a practical actio
 4. Run
 
    npm run dev
+
+## Final links
+
+- Live demo: https://daily-life-problem-solver-hub.vercel.app
+- GitHub repo: https://github.com/arqamxscales/Daily-Life-Problem-SolverHub-Gdg-Live
+- Release tag: https://github.com/arqamxscales/Daily-Life-Problem-SolverHub-Gdg-Live/releases/tag/v1.0.0-launch
 
 ## Database Files
 

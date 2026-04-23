@@ -6,11 +6,11 @@
 
 ---
 
-### Post Title: 🚀 Daily Life Problem Solver Hub - Now Live!
+### Post Title: 🚀 Daily Life Problem Solver Hub - Beta Demo Now Live!
 
 Hey everyone! 👋
 
-We're thrilled to announce the **Daily Life Problem Solver Hub** – a production-ready AI web application built as part of **GDG Live Pakistan**.
+We're thrilled to announce the **Daily Life Problem Solver Hub** – a beta AI web application built as part of **GDG Live Pakistan**.
 
 ### What is it?
 Transform personal challenges into actionable plans. Write about your daily problem, and our AI (powered by **Google Gemini 2.5 Flash API**) generates:
@@ -21,10 +21,10 @@ Transform personal challenges into actionable plans. Write about your daily prob
 - 💬 Follow-up chat with multiple AI agents (Planner, Coach, Critic, Scheduler)
 
 ### Key Highlights
-✨ **Real Authentication** - Google OAuth + Email/Password with PKCE security
+✨ **Demo Login Only** - beta access without real Google/email auth for now
 🔐 **Secure by Design** - Gemini API calls proxied server-side (never exposed to browser)
 ⚡ **Streaming Responses** - Real-time AI streaming with live text rendering
-💾 **Persistent Memory** - Multi-threaded conversations synced to Supabase
+💾 **Persistent Memory** - Multi-threaded conversations with local demo storage
 🎯 **Multi-Agent** - Upgrade your plan with 4 different AI agents
 📱 **Mobile-Ready** - Built with React 19, TypeScript, Tailwind CSS, Vite
 
@@ -42,7 +42,7 @@ Transform personal challenges into actionable plans. Write about your daily prob
 ### Created by
 **Mohammad Arqam Javed** - @arqamxscales
 
-This project demonstrates production-grade full-stack AI development using Google Cloud services, modern frameworks, and best practices for security, authentication, and real-time streaming.
+This project demonstrates beta-stage full-stack AI development using Google Cloud services, modern frameworks, and best practices for secure demo experiences and real-time streaming.
 
 **Special thanks to Google Developers Club Live Pakistan for the platform and community support!**
 
@@ -58,20 +58,20 @@ Feel free to fork, contribute, or reach out with questions. Happy problem-solvin
 
 ### Post:
 
-🚀 Excited to announce **Daily Life Problem Solver Hub** - a production-ready AI web app just launched!
+🚀 Excited to announce **Daily Life Problem Solver Hub** - a beta AI web app now live with demo login only!
 
 Taking personal problems from concept to action plan in seconds. Users write their challenge → AI generates strategy, action plan, weekly schedule, risk checklist, and provides follow-up guidance via multi-agent chatbot.
 
 **Key Technical Achievements:**
-✅ Real Google OAuth authentication with PKCE security flow
+✅ Demo login only for beta access
 ✅ Server-side Gemini API proxy (never exposed to browser)
 ✅ Streaming AI responses with live text rendering
-✅ Multi-threaded chat with persistent Supabase memory
+✅ Multi-threaded chat with local beta memory
 ✅ RLS-enabled database with full schema migrations
-✅ Token refresh hardening + automatic session validation
+✅ Session hardening retained for future auth expansion
 ✅ Responsive UI with React 19, TypeScript, Tailwind CSS 4
 
-Built as a showcase for **GDG Live Pakistan** - demonstrating production-grade full-stack AI development with Google AI Services.
+Built as a showcase for **GDG Live Pakistan** - demonstrating beta-stage full-stack AI development with Google AI Services.
 
 🔗 **Live:** https://daily-life-problem-solver-hub.vercel.app
 🔗 **Code:** https://github.com/arqamxscales/Daily-Life-Problem-SolverHub-Gdg-Live
@@ -95,7 +95,7 @@ Huge thanks to the Google Developers community for the inspiration and platform!
 
 ### Description:
 
-Production-ready AI web application that transforms personal daily challenges into comprehensive action plans using Google Gemini 2.5 Flash API.
+Beta AI web application that transforms personal daily challenges into comprehensive action plans using Google Gemini 2.5 Flash API.
 
 **What it does:**
 Users describe their problem → AI generates strategic summary, quick wins, step-by-step plan, weekly schedule, and risk assessment. Multi-agent system enables plan upgrades with different AI personas (Planner, Coach, Critic, Scheduler).
@@ -104,17 +104,17 @@ Users describe their problem → AI generates strategic summary, quick wins, ste
 - **Frontend:** React 19, TypeScript, Vite 8, Tailwind CSS 4, Framer Motion
 - **Backend:** Supabase (PostgreSQL with RLS policies)
 - **AI/ML:** Google Gemini 2.5 Flash API via AI Studio (server-side proxy)
-- **Auth:** Google OAuth + Email/Password with PKCE flow
+- **Auth:** Demo login only for beta access
 - **Deployment:** Vercel (production)
 - **Database:** Multi-tenant with RLS, schema migrations, one-click seeding
 
 **Key Features:**
-✅ Real authentication (Google OAuth with PKCE)
+✅ Demo login only
 ✅ Streaming chat responses
 ✅ Multi-threaded conversations
-✅ Persistent memory (local + Supabase)
+✅ Persistent memory (local demo mode)
 ✅ Route guards & protected pages
-✅ Token refresh hardening
+✅ Session hardening retained for future auth
 ✅ Secure server-side Gemini proxy
 ✅ Responsive design
 ✅ Fallback offline mode
@@ -127,7 +127,7 @@ Users describe their problem → AI generates strategic summary, quick wins, ste
 
 **Author:** Mohammad Arqam Javed
 
-This project demonstrates enterprise-grade full-stack development with modern authentication patterns, secure API design, real-time streaming, and multi-tenant data isolation.
+This project demonstrates beta-stage full-stack development with secure API design, real-time streaming, and demo-focused user experience.
 
 ---
 
@@ -137,7 +137,7 @@ This project demonstrates enterprise-grade full-stack development with modern au
 
 ---
 
-🚀 Just shipped: **Daily Life Problem Solver Hub** - Turn your daily problems into AI-powered action plans!
+🚀 Just shipped: **Daily Life Problem Solver Hub** - beta demo login only, turn your daily problems into AI-powered action plans!
 
 ✨ Write your challenge
 🤖 Get strategy + plan + schedule
@@ -163,7 +163,7 @@ Code: https://github.com/arqamxscales/Daily-Life-Problem-SolverHub-Gdg-Live
 
 Hi there!
 
-We're pleased to announce the launch of **Daily Life Problem Solver Hub**, a production-ready AI application built by **Mohammad Arqam Javed** for **Google Developers Club Live Pakistan**.
+We're pleased to announce the launch of **Daily Life Problem Solver Hub**, a beta AI application built by **Mohammad Arqam Javed** for **Google Developers Club Live Pakistan**.
 
 **The Problem:**
 Life challenges require thoughtful planning. Creating a solid action plan often involves multiple steps: defining strategy, breaking it down, scheduling, and staying accountable.
@@ -177,11 +177,12 @@ Our AI-powered app automates this. Just describe your challenge, and get:
 - 💬 Multi-agent follow-up guidance
 
 **What Makes It Special:**
-- **Secure & Private:** All data encrypted; Google OAuth authentication
+- **Beta demo access:** login with the demo button only
+- **Secure & Private:** All data encrypted; no Google OAuth authentication enabled yet
 - **Real-time Streaming:** Watch AI responses appear in real-time
 - **Multi-threaded:** Have multiple conversations, each with persistent memory
 - **Open Source:** Full code available on GitHub
-- **Production-Ready:** Built with industry best practices
+- **Beta-Ready:** Built with industry best practices
 
 **Try It Now:**
 🌐 https://daily-life-problem-solver-hub.vercel.app
