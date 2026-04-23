@@ -162,22 +162,7 @@ For anonymous inserts into plans, add an additional policy as needed.
 - PKCE OAuth flow enabled
 - Periodic session hardening runs every 60s and refreshes near-expiry tokens
 - Failed refresh triggers sign-out to avoid stale/invalid session usage
-
-## Deploy to Vercel
-
-1. Push project to GitHub
-2. Import repository in Vercel
-3. Framework preset: Vite
-4. Add env vars from `.env.example`
-5. Deploy
-
-The repository now includes [vercel.json](vercel.json) for SPA routing and build settings.
-
-If you want me to finish the GitHub + Vercel handoff steps with you, send me:
-
-- your GitHub repo link
-- whether the repo is new or existing
-- whether you want the deployment branch to be `main` or `master`
+main` or `master`
 
 ## Notes
 
