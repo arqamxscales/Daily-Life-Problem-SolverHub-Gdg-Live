@@ -1,3 +1,9 @@
+
+<img width="449" height="244" alt="Screenshot 2026-04-23 at 1 59 35 PM" src="https://github.com/user-attachments/assets/3b64ad08-6c33-4533-b391-11beb4a19c37" />
+<img width="1277" height="487" alt="Screenshot 2026-04-23 at 2 00 24 PM" src="https://github.com/user-attachments/assets/4f18ea17-7cb7-425f-b8c4-99fa86263212" />
+<img width="1231" height="589" alt="Screenshot 2026-04-23 at 2 00 08 PM" src="https://github.com/user-attachments/assets/97b5317e-e48d-4059-9089-0816666e8b50" />
+<img width="1440" height="767" alt="Screenshot 2026-04-23 at 1 59 52 PM" src="https://github.com/user-attachments/assets/b2b7a203-b293-4ca1-8806-7cb056e0c770" />
+
 # Daily Life Problem Solver Hub
 
 Beta AI web app that turns personal daily-life problems into a practical action plan, weekly steps, and a 7-day schedule.
